@@ -7,12 +7,37 @@ const { notFound, errorHandler } = require('./middleware/errorMiddleware');
 const app = express();
 
 // CORS options
-app.use(cors({
-  origin: [ process.env.FRONTEND_URL || 'https://linkedin-project-eta.vercel.app',
+const allowedOrigins = [
+  process.env.FRONTEND_URL,
+  'https://linkedin-project-eta.vercel.app',
   'http://localhost:3000'
-],
+]
+  .filter(Boolean)
+  .map(url => url.trim().replace(/^["']|["']$/g, '').replace(/\/$/, ''));
+
+const corsOptions = {
+  origin: (origin, callback) => {
+    // Allow requests with no origin (like mobile apps, curl, postman)
+    if (!origin) return callback(null, true);
+    
+    const normalizedOrigin = origin.trim().replace(/\/$/, '');
+    
+    if (allowedOrigins.includes(normalizedOrigin)) {
+      return callback(null, true);
+    }
+    
+    // Support vercel.app subdomains and localhost
+    if (normalizedOrigin.endsWith('vercel.app') || normalizedOrigin.startsWith('http://localhost:')) {
+      return callback(null, true);
+    }
+    
+    return callback(new Error('Not allowed by CORS'));
+  },
   credentials: true,
-}));
+  optionsSuccessStatus: 200,
+};
+
+app.use(cors(corsOptions));
 
 // Middlewares
 app.use(express.json());

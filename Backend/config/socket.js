@@ -7,7 +7,22 @@ const initSocket = (server) => {
   io = socketIO(server, {
     pingTimeout: 60000,
     cors: {
-      origin: process.env.FRONTEND_URL || 'linkedin-clone-project-fawn.vercel.app',
+      origin: (origin, callback) => {
+        if (!origin) return callback(null, true);
+        const allowedOrigins = [
+          process.env.FRONTEND_URL,
+          'https://linkedin-project-eta.vercel.app',
+          'http://localhost:3000'
+        ]
+          .filter(Boolean)
+          .map(url => url.trim().replace(/^["']|["']$/g, '').replace(/\/$/, ''));
+        
+        const normalizedOrigin = origin.trim().replace(/\/$/, '');
+        if (allowedOrigins.includes(normalizedOrigin) || normalizedOrigin.endsWith('vercel.app') || normalizedOrigin.startsWith('http://localhost:')) {
+          return callback(null, true);
+        }
+        return callback(new Error('Not allowed by CORS'));
+      },
       methods: ['GET', 'POST'],
       credentials: true,
     },
