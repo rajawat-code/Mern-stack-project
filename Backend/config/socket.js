@@ -15,7 +15,14 @@ const initSocket = (server) => {
           'http://localhost:3000'
         ]
           .filter(Boolean)
-          .map(url => url.trim().replace(/^["']|["']$/g, '').replace(/\/$/, ''));
+          .map(url => {
+            try {
+              const parsed = new URL(url.trim().replace(/^["']|["']$/g, ''));
+              return parsed.origin;
+            } catch (e) {
+              return url.trim().replace(/^["']|["']$/g, '').replace(/\/$/, '');
+            }
+          });
         
         const normalizedOrigin = origin.trim().replace(/\/$/, '');
         if (allowedOrigins.includes(normalizedOrigin) || normalizedOrigin.endsWith('vercel.app') || normalizedOrigin.startsWith('http://localhost:')) {

@@ -13,7 +13,14 @@ const allowedOrigins = [
   'http://localhost:3000'
 ]
   .filter(Boolean)
-  .map(url => url.trim().replace(/^["']|["']$/g, '').replace(/\/$/, ''));
+  .map(url => {
+    try {
+      const parsed = new URL(url.trim().replace(/^["']|["']$/g, ''));
+      return parsed.origin;
+    } catch (e) {
+      return url.trim().replace(/^["']|["']$/g, '').replace(/\/$/, '');
+    }
+  });
 
 const corsOptions = {
   origin: (origin, callback) => {
