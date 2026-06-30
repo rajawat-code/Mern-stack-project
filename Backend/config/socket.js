@@ -12,7 +12,8 @@ const initSocket = (server) => {
         const allowedOrigins = [
           process.env.FRONTEND_URL,
           'https://linkedin-project-eta.vercel.app',
-          'http://localhost:3000'
+          'http://localhost:3000',
+          'https://linkedin-clone-project-1.onrender.com'
         ]
           .filter(Boolean)
           .map(url => {

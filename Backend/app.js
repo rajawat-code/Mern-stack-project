@@ -10,7 +10,7 @@ const app = express();
 const allowedOrigins = [
   process.env.FRONTEND_URL,
   'https://linkedin-project-eta.vercel.app',
-  'http://localhost:3000'
+  'http://localhost:3000',
 ]
   .filter(Boolean)
   .map(url => {
@@ -52,14 +52,15 @@ app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 
 // Rate Limiting for Security
-const apiLimiter = rateLimit({
-  windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 100,
-  message: 'Too many requests from this IP, please try again after 15 minutes',
-  standardHeaders: true,
-  legacyHeaders: false,
-});
-app.use('/api', apiLimiter);
+// const apiLimiter = rateLimit({
+//   windowMs: 15 * 60 * 1000, // 15 minutes
+//   max: 100,
+//   message: 'Too many requests from this IP, please try again after 15 minutes',
+//   standardHeaders: true,
+//   legacyHeaders: false,
+// });
+// app.use('/api', apiLimiter);
+
 
 // Import Routes
 const authRoutes = require('./routes/authRoutes');
